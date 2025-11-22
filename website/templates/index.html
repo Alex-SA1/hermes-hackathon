@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Analytics Portal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            background-color: #121212;
+            color: #f1f1f1;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1470&q=80') no-repeat center center;
+            background-size: cover;
+            padding: 120px 0;
+            text-align: center;
+            color: #fff;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+
+        /* Features Section */
+        .features .card {
+            border: none;
+            border-radius: 15px;
+            padding: 30px;
+            background-color: #1e1e1e;
+            transition: transform 0.3s;
+            color: #f1f1f1;
+        }
+
+        .features .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1c1c1c;
+            color: #bbb;
+            padding: 30px 0;
+        }
+
+        footer a {
+            color: #f1f1f1;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">Student Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Analyze Student Performance Effortlessly</h1>
+            <p>Track grades, identify trends, and help students succeed with data-driven insights.</p>
+            <a href="#" class="btn btn-primary btn-lg">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Why Choose Our Platform?</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <img src="https://img.icons8.com/ios-filled/64/0d6efd/data.png" alt="Data" class="mb-3">
+                            <h5 class="card-title">Comprehensive Data</h5>
+                            <p class="card-text">Collect and visualize grades for each student with clarity and
+                                precision.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <img src="https://img.icons8.com/ios-filled/64/0d6efd/analytics.png" alt="Analytics"
+                                class="mb-3">
+                            <h5 class="card-title">Smart Analytics</h5>
+                            <p class="card-text">Identify trends, spot struggling students, and make informed decisions
+                                easily.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <img src="https://img.icons8.com/ios-filled/64/0d6efd/online-learning.png" alt="Learning"
+                                class="mb-3">
+                            <h5 class="card-title">Interactive & Easy</h5>
+                            <p class="card-text">User-friendly interface designed for teachers, students, and
+                                administrators.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call-to-Action Section -->
+    <section class="py-5 text-white text-center" style="background-color:#0d6efd;">
+        <div class="container">
+            <h2 class="mb-4">Ready to Improve Student Performance?</h2>
+            <a href="#" class="btn btn-light btn-lg">Sign Up Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p>&copy; 2025 Student Analytics. All rights reserved.</p>
+            <p>
+                <a href="#">Privacy</a> |
+                <a href="#">Terms</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
