@@ -1,0 +1,227 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendarul Meu - Nibble Classroom</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static '/css/student_calendar.css' %}">
+</head>
+
+<body>
+    {% include 'sidebar.html' %}
+
+    <div class="main-content" id="mainContent">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    Calendarul Meu
+                </a>
+            </div>
+        </nav>
+
+
+        <div class="calendar-exam-container">
+            <div class="calendar-section">
+                <h5>
+                    <i class="fas fa-calendar"></i> Noiembrie 2025
+                </h5>
+
+                <div class="calendar-month-selector">
+                    <button onclick="previousMonth()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h6 id="currentMonth">Noiembrie 2025</h6>
+                    <button onclick="nextMonth()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="calendar-header">
+                    <div class="calendar-day-name">Lun</div>
+                    <div class="calendar-day-name">Mar</div>
+                    <div class="calendar-day-name">Mie</div>
+                    <div class="calendar-day-name">Joi</div>
+                    <div class="calendar-day-name">Vin</div>
+                    <div class="calendar-day-name">Sâm</div>
+                    <div class="calendar-day-name">Dum</div>
+                </div>
+
+                <div class="calendar-grid" id="calendarGrid">
+                </div>
+
+                <div class="calendar-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #ffcdd2;"></div>
+                        <span>Zi de Examen</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #c8e6c9;"></div>
+                        <span>Liber</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="border: 2px solid #667eea;"></div>
+                        <span>Astăzi</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exam-details-section">
+                <h5>
+                    <i class="fas fa-file-alt"></i> Detalii Examen
+                </h5>
+
+                <div class="exam-details-content empty" id="examDetailsContent">
+                    <i class="fas fa-mouse-pointer"></i>
+                    <p>Dă click pe o dată roșie din calendar pentru a vedea detaliile examenului</p>
+                </div>
+
+                <div class="exam-info" id="examInfo">
+                    <div class="exam-detail-item">
+                        <label>Data</label>
+                        <p id="examDate">-</p>
+                    </div>
+                    <div class="exam-detail-item">
+                        <label>Materia</label>
+                        <p id="examSubject">-</p>
+                    </div>
+                    <div class="exam-detail-item">
+                        <label>Profesor</label>
+                        <p id="examTeacher">-</p>
+                    </div>
+                    <div class="exam-detail-item">
+                        <label>Tip de Test</label>
+                        <p id="examType">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    {{ exams|json_script:"exams" }}
+    <script>
+
+        const calendar = JSON.parse(
+            JSON.parse(
+                document.getElementById('exams').textContent));
+
+
+        let currentMonth = 10;
+        let currentYear = 2025;
+
+        const exams = calendar.reduce((acc, item) => {
+            acc[item.date] = {
+                subject: item.subject,
+                teacher: item.teacher,
+                type: item.type
+            };
+            return acc;
+        }, {});
+
+        console.log(exams)
+
+        const holidays = ['2025-12-1', '2025-12-22', '2025-12-23', '2025-12-24', '2025-12-25', '2025-12-26',
+            '2025-12-29', '2025-12-30', '2025-12-31', '2026-01-01', '2026-01-02', '2026-01-05', '2026-01-06', '2026-01-07'
+        ];
+
+        function generateCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+
+            let startDay = firstDay.getDay() - 1;
+            if (startDay === -1) startDay = 6;
+
+            const today = new Date();
+            const isCurrentMonth = today.getMonth() === currentMonth && today.getFullYear() === currentYear;
+            const todayDate = today.getDate();
+
+            for (let i = 0; i < startDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day other-month';
+                const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
+                emptyDay.textContent = prevMonthDays - startDay + i + 1;
+                calendarGrid.appendChild(emptyDay);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                dayDiv.textContent = day;
+
+                const dateString = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+                if (isCurrentMonth && day === todayDate) {
+                    dayDiv.classList.add('today');
+                }
+
+                if (holidays.includes(dateString)) {
+                    dayDiv.classList.add('holiday');
+                }
+
+                if (exams[dateString]) {
+                    dayDiv.classList.add('exam');
+                    dayDiv.onclick = () => showExamDetails(dateString);
+                }
+
+                calendarGrid.appendChild(dayDiv);
+            }
+
+            const monthNames = ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie',
+                'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'];
+            document.getElementById('currentMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        }
+
+        function showExamDetails(dateString) {
+            const exam = exams[dateString];
+            if (!exam) return;
+
+            document.getElementById('examDetailsContent').classList.remove('empty');
+            document.getElementById('examDetailsContent').style.display = 'none';
+            document.getElementById('examInfo').classList.add('active');
+
+            const date = new Date(dateString);
+            const formattedDate = date.toLocaleDateString('ro-RO', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            document.getElementById('examDate').textContent = formattedDate;
+            document.getElementById('examSubject').textContent = exam.subject;
+            document.getElementById('examTeacher').textContent = exam.teacher;
+            document.getElementById('examType').textContent = exam.type;
+        }
+
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar();
+        }
+
+        generateCalendar();
+    </script>
+</body>
+
+</html>

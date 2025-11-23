@@ -1,0 +1,74 @@
+{% load static %}
+<link rel="stylesheet" href="{% static '/css/sidebar.css' %}">
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h4>Nibble Classroom</h4>
+        <button class="toggle-btn" id="toggleBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+
+    <ul class="sidebar-menu">
+        <li class="menu-item">
+            <a class="menu-link {% if request.resolver_match.url_name == 'student-page' %}active{% endif %}"
+                href="{% url 'student-page' %}">
+                <i class="fas fa-home"></i>
+                <span>Panou Principal</span>
+            </a>
+        </li>
+
+        <li class="menu-item">
+            <a class="menu-link {% if request.resolver_match.url_name == 'student-grades' %}active{% endif %}"
+                href="{% url 'student-grades' %}">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Note</span>
+            </a>
+        </li>
+
+        <li class="menu-item">
+            <a class="menu-link {% if request.resolver_match.url_name == 'student-table' %}active{% endif %}"
+                href="{% url 'student-table' %}">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Orar</span>
+            </a>
+        </li>
+
+        <li class="menu-item">
+            <a class="menu-link {% if request.resolver_match.url_name == 'student-calendar' %}active{% endif %}"
+                href="{% url 'student-calendar' %}">
+                <i class="fas fa-calendar"></i>
+                <span>Calendar</span>
+            </a>
+        </li>
+
+        <li class="menu-item">
+            <a class="menu-link {% if request.resolver_match.url_name == 'student-attendance' %}active{% endif %}" 
+                href="{% url 'student-attendance' %}">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Prezenta</span>
+            </a>
+        </li>
+
+
+        <li class="menu-item">
+            <a class="menu-link" href="{% url 'logout' %}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Deconectare</span>
+            </a>
+        </li>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const toggleBtn = document.getElementById('toggleBtn');
+
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            });
+        </script>
+    </ul>
+</div>

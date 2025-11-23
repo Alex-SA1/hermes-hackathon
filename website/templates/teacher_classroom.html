@@ -1,0 +1,305 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasa {{ classroom.number }}{{ classroom.letter }}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static '/css/teacher_classroom.css' %}">
+</head>
+
+<body>
+    <main class="container py-5">
+
+        <div class="hero-card mb-5 position-relative">
+
+            <h1 class="display-6 fw-bold mb-2">
+                Clasa {{ classroom.number }}{{ classroom.letter }}
+            </h1>
+
+            <p class="text-light opacity-75 mb-0">
+                Gestionează elevii și adaugă note la materia ta.
+            </p>
+
+            <a href="{% url 'add-exam-page' classroom.id %}" class="btn btn-primary"
+                style="position:absolute; right:20px; bottom:20px;">
+                + Adaugă Evaluare
+            </a>
+
+
+            <a href="javascript:history.back()" class="btn back-btn" style="position:absolute; right:20px; top:20px;">
+                ← Înapoi
+            </a>
+        </div>
+
+
+        {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+            <div class="alert 
+                            {% if message.tags == 'error' %} alert-danger 
+                            {% elif message.tags == 'success' %} alert-success 
+                            {% else %} alert-info 
+                            {% endif %}
+                            shadow-sm"
+                style="border-radius:10px; background:rgba(255,255,255,0.08); color:white; border:1px solid rgba(255,255,255,0.25);">
+
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
+        <div class="row g-4 align-items-stretch">
+
+            <div class="col-lg-6 d-flex">
+                <div class="sub-card equal-card w-100">
+                    <p class="section-title mb-3">Adauga Absenta</p>
+
+
+
+
+
+                    <form method="POST" action="{% url 'add-absence' classroom.id %}">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Elev</label>
+                            <select class="form-select" name="student" required>
+                                <option disabled selected>Selecteaza elevul</option>
+                                {% for student in students %}
+                                <option value="{{ student.id }}">
+                                    {{ student.user.first_name }} {{ student.fathers_initial }}
+                                    {{ student.user.last_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Materia</label>
+                            <select class="form-select" name="subject">
+                                <option value="">Fara materie</option>
+                                {% for subject in subjects %}
+                                <option value="{{ subject.id }}">{{ subject.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Data</label>
+                            <input type="date" name="date" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Ora</label>
+                            <input type="time" name="time" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Observatie (optional)</label>
+                            <input type="text" name="note" class="form-control" placeholder="ex: Nemotivata">
+                        </div>
+                        <div>
+                            <button class="btn btn-primary w-100 mt-3 push-bottom">Adauga Absenta</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-6 d-flex">
+                <div class="sub-card equal-card w-100">
+                    <p class="section-title mb-3">Adauga Nota</p>
+
+                    <form method="POST" action="{% url 'add-grade' classroom.id %}">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Elev</label>
+                            <select class="form-select" name="student" required>
+                                <option disabled selected>Selecteaza elevul</option>
+                                {% for student in students %}
+                                <option value="{{ student.id }}">
+                                    {{ student.user.first_name }} {{ student.fathers_initial }}
+                                    {{ student.user.last_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Materia</label>
+                            <select class="form-select" name="subject" required>
+                                <option disabled selected>Selecteaza materia</option>
+                                {% for subject in subjects %}
+                                <option value="{{ subject.id }}">{{ subject.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nota</label>
+                            <input type="number" name="grade" class="form-control" min="1" max="10" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Data notei</label>
+                            <input type="date" name="date" class="form-control" required>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Evaluare (optional)</label>
+                            <select class="form-select" name="exam">
+                                <option value="">Fără evaluare</option>
+                                {% for exam in exams %}
+                                <option value="{{ exam.id }}">
+                                    {{ exam.type }} - {{ exam.subject.name }} ({{ exam.date }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+
+                        <div>
+                            <button class="btn btn-primary w-100 mt-3 push-bottom">Adauga Nota</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="sub-card mt-5">
+            <p class="section-title mb-3">Catalogul clasei</p>
+
+            <div class="table-responsive">
+                <table class="table catalog-table align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-light">Elev</th>
+                            {% for subject in subjects %}
+                            <th class="text-light text-center">{{ subject.name }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for row in catalog %}
+                        <tr>
+                            <td class="fw-bold">
+                                {{ row.student.user.first_name }}
+                                {{ row.student.fathers_initial }}
+                                {{ row.student.user.last_name }}
+                            </td>
+
+                            {% for s in row.subjects %}
+                            <td class="text-center">
+
+                                {% if s.grades %}
+                                {% for g in s.grades %}
+                                <span class="badge grade-badge">
+
+                                    {{ g.grade }}
+                                    <small>({{ g.date }})</small>
+
+                                    {% if g.exam %}
+                                    <br>
+                                    <small class="text-info" style="font-weight:600;">
+                                        {{ g.exam.type }}
+                                    </small>
+                                    {% endif %}
+
+                                </span><br>
+                                {% endfor %}
+                                {% else %}
+                                <span class="text-secondary">-</span>
+                                {% endif %}
+
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+
+        <div class="sub-card mt-5">
+            <p class="section-title mb-3">Catalogul Absentelor</p>
+            <div class="table-responsive">
+                <table class="table catalog-table align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-light">Elev</th>
+                            <th class="text-center text-light">Materia</th>
+                            <th class="text-center text-light">Data</th>
+                            <th class="text-center text-light">Ora</th>
+                            <th class="text-center text-light">Observatie</th>
+                            <th class="text-center text-light">Profesor</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for ab in absences %}
+                        <tr>
+                            <td class="fw-bold">
+                                {{ ab.student.user.first_name }}
+                                {{ ab.student.fathers_initial }}
+                                {{ ab.student.user.last_name }}
+                            </td>
+
+                            <td class="text-center">
+                                {% if ab.subject %}
+                                {{ ab.subject.name }}
+                                {% else %}
+                                <span class="grade-empty">—</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-center">{{ ab.date }}</td>
+
+                            <td class="text-center">{{ ab.time|time:"H:i" }}</td>
+
+                            <td class="text-center">
+                                {% if ab.note %}
+                                {{ ab.note }}
+                                {% else %}
+                                <span class="grade-empty">—</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-center">
+                                {% if ab.recorded_by %}
+                                {{ ab.recorded_by.user.first_name }}
+                                {{ ab.recorded_by.user.last_name }}
+                                {% else %}
+                                —
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-secondary py-3">
+                                Nu exista absente inregistrate pentru aceasta clasa.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

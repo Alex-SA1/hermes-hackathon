@@ -1,0 +1,180 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0f0f1e;
+    color: #f1f1f1;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.main-content {
+    margin-left: 260px;
+    transition: margin-left 0.3s ease;
+    min-height: 100vh;
+}
+
+.main-content.expanded {
+    margin-left: 70px;
+}
+
+.navbar {
+    background-color: #333 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #f1f1f1 !important;
+}
+
+.timetable-section {
+    background: #1e1e2f;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.timetable-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    font-size: 0.85rem;
+}
+
+.timetable-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid #fff;
+    font-size: 0.9rem;
+}
+
+.timetable-table th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.timetable-table th:last-child {
+    border-top-right-radius: 8px;
+}
+
+.timetable-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border: 1px solid #444;
+    vertical-align: middle;
+    transition: all 0.3s;
+    color: #e0e0e0;
+}
+
+.timetable-table td:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.timetable-table td.time-cell {
+    background-color: #333;
+    font-weight: 600;
+    color: #667eea;
+    font-size: 0.8rem;
+}
+
+.subject-empty {
+    background-color: #222;
+    color: #888;
+    font-style: italic;
+}
+
+.subject-empty:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+
+.timetable-table td:not(.time-cell):not(.subject-empty):not([class^="subject-"]) {
+    background-color: #444;
+}
+
+.subject-mathematics {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.subject-englishliterature {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+.subject-physicaleducation {
+    background-color: #fff9c4;
+    color: #f57f17;
+}
+
+.subject-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+}
+
+.teacher-name {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    font-weight: 400;
+}
+
+.subject-math {
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+    color: #fff;
+}
+
+.subject-english {
+    background: linear-gradient(135deg, #64b5f6 0%, #01579b 100%);
+    color: #fff;
+}
+
+.subject-science {
+    background: linear-gradient(135deg, #388e3c 0%, #1b5e20 100%);
+    color: #fff;
+}
+
+.subject-history {
+    background: linear-gradient(135deg, #ffb74d 0%, #e65100 100%);
+    color: #fff;
+}
+
+.subject-physics {
+    background: linear-gradient(135deg, #ab47bc 0%, #8e24aa 100%);
+    color: #fff;
+}
+
+.subject-chemistry {
+    background: linear-gradient(135deg, #ec407a 0%, #880e4f 100%);
+    color: #fff;
+}
+
+.subject-biology {
+    background: linear-gradient(135deg, #004d40 0%, #1b5e20 100%);
+    color: #fff;
+}
+
+.subject-break {
+    background: linear-gradient(135deg, #78909c 0%, #4e5b62 100%);
+    color: #fff;
+    font-style: italic;
+}
+
+.subject-informatica {
+    background: linear-gradient(135deg, #afb42b 0%, #827717 100%);
+    color: #fff;
+}
+
+.subject-romana {
+    background: linear-gradient(135deg, #5e35b1 0%, #3d1e76 100%);
+    color: #fff;
+}

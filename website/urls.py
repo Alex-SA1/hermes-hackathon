@@ -1,21 +1,8 @@
-"""
-URL configuration for website project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
 from website import views
 
@@ -25,5 +12,29 @@ urlpatterns = [
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
     path('student-page/', views.student_main, name='student-page'),
-    path('teacher-page/', views.teacher_main, name='teacher-page')
+    path('student-page/grades', views.student_grades, name='student-grades'),
+    path('student-page/time_table', views.student_time_table, name='student-table'),
+    path('student-page/calendar', views.student_calendar, name='student-calendar'),
+    path('student-page/attendance', views.student_attendance,
+         name='student-attendance'),
+
+    path('teacher-page/', views.teacher_main, name='teacher-page'),
+    path("teacher/classroom/<int:class_id>/",
+         views.teacher_classroom_detail, name="teacher-classroom"),
+    path("teacher/classroom/<int:class_id>/grade/",
+         views.add_grade, name="add-grade"),
+    path("teacher/classroom/<int:class_id>/absence/S",
+         views.add_absence, name="add-absence"),
+    path("teacher/classroom/<int:class_id>/exams/",
+         views.exam_page, name="add-exam-page"),
+    path("teacher/classroom/<int:class_id>/exams/add/",
+         views.add_exam, name="add-exam"),
+
+    path("reviews/", views.review_page, name="reviews-page"),
+
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

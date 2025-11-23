@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluări - Clasa {{ classroom.name }}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body {
+            background: rgba(3, 7, 18, 1);
+            color: #f2f2f2;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .back-btn {
+            padding: 10px 22px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: white;
+            text-decoration: none;
+            transition: 0.25s ease;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        .back-btn:hover {
+            background: rgba(255,255,255,0.22);
+            border-color: rgba(255,255,255,0.45);
+            transform: translateY(-2px);
+        }
+
+     
+        .hero-card, .sub-card {
+            background: linear-gradient(135deg, rgba(13,110,253,0.12), rgba(3,7,18,0.92));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+
+        .section-title {
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.06em;
+            color: #8ea2c6;
+            font-weight: 700;
+        }
+
+     
+        .form-control, .form-select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: #fff;
+        }
+
+        .form-select option {
+            background-color: #0f162b !important;
+            color: #fff !important;
+        }
+
+     
+        .btn-primary {
+            background: linear-gradient(90deg, #0d6efd, #42a5f5);
+            border: none;
+            font-weight: 700;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #0b5ed7, #1e88e5);
+        }
+
+      
+        .catalog-table th {
+            background: rgba(255,255,255,0.05);
+            padding: 14px 18px;
+            font-size: .85rem;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #8ea2c6 !important;
+        }
+        .catalog-table td {
+            padding: 16px 18px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            color: #fff !important;
+        }
+        .catalog-table tr:hover td {
+            background: rgba(255,255,255,0.06) !important;
+        }
+
+     
+        .grade-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 10px;
+            background: linear-gradient(90deg,#0d6efd,#42a5f5);
+            color: white;
+            font-weight: 700;
+            font-size: .85rem;
+            box-shadow: 0 4px 12px rgba(13,110,253,.4);
+        }
+
+        .grade-empty {
+            color: #7085a5;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+<main class="container py-5">
+
+   
+    <div class="hero-card mb-5 position-relative">
+        <h1 class="display-6 fw-bold mb-2">
+            Evaluări – Clasa {{ classroom.name }}
+        </h1>
+
+        <p class="text-light opacity-75 mb-0">Vezi și adaugă evaluări pentru materiile tale.</p>
+
+        <a href="javascript:history.back()" class="back-btn">← Înapoi</a>
+    </div>
+
+    
+    <div class="sub-card mb-5">
+        <p class="section-title mb-3">Adaugă evaluare</p>
+
+        <form method="POST" enctype="multipart/form-data" action="{% url 'add-exam' classroom.id %}">
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Tip evaluare</label>
+                    <select name="type" class="form-select" required>
+                        <option disabled selected>Selectează tipul</option>
+                        {% for value, label in exam_types %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Materia</label>
+                    <select name="subject" class="form-select" required>
+                        <option disabled selected>Selectează materia</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject.id }}">{{ subject.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Data</label>
+                    <input type="date" name="date" class="form-control" required>
+                </div>
+
+                <div class="col-12 mb-3">
+                    <label class="form-label fw-bold">Fișier (opțional)</label>
+                    <input type="file" name="file" class="form-control">
+                </div>
+
+            </div>
+
+            <button class="btn btn-primary w-100">Adaugă evaluare</button>
+        </form>
+    </div>
+
+   
+    <div class="sub-card">
+        <p class="section-title mb-3">Catalogul Evaluărilor</p>
+
+        <div class="table-responsive">
+            <table class="table catalog-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Tip</th>
+                        <th>Materia</th>
+                        <th class="text-center">Data</th>
+                        <th class="text-center">Fișier</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for exam in exams %}
+                    <tr>
+                        <td class="fw-bold">{{ exam.get_type_display }}</td>
+                        <td>{{ exam.subject.name }}</td>
+
+                        <td class="text-center">
+                            <span class="grade-badge">{{ exam.date }}</span>
+                        </td>
+
+                        <td class="text-center">
+                            {% if exam.file %}
+                                <a href="{{ exam.file.url }}" class="btn btn-sm btn-primary">Download</a>
+                            {% else %}
+                                <span class="grade-empty">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-secondary py-3">
+                            Nu există evaluări pentru această clasă.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</main>
+</body>
+</html>

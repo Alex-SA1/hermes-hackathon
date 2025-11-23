@@ -1,1 +1,4 @@
 .env
+seed.py
+test.py
+media/*

@@ -1,0 +1,444 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notele Mele - Nibble Classroom</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static '/css/student_grades.css' %}">
+</head>
+<style>
+    
+    #gradesTableContainer {
+        background-color: #2c2f38;
+       
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+  
+    .table {
+        background-color: #333 !important;
+        color: #fff !important;
+        
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    
+    .table thead {
+        background-color: #444 !important;
+        
+    }
+
+    .table thead th {
+        color: #fff !important;
+        
+        padding: 12px;
+        text-align: left;
+    }
+
+   
+    .table tbody tr {
+        background-color: #555 !important;
+       
+    }
+
+    .table tbody tr:hover {
+        background-color: #666 !important;
+       
+        cursor: pointer;
+    }
+
+    
+    .table td {
+        color: #ddd !important;
+        
+        padding: 12px;
+    }
+
+    
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #444 !important;
+    }
+
+    .table-striped tbody tr:nth-of-type(even) {
+        background-color: #555 !important;
+    }
+
+    
+    .table,
+    .table th,
+    .table td {
+        border: 1px solid #555 !important;
+       
+    }
+</style>
+
+<body>
+
+    {% include 'sidebar.html' %}
+
+    <div class="main-content" id="mainContent">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Notele Mele</a>
+            </div>
+        </nav>
+
+        <div class="container-fluid my-4">
+            <div class="layout-container">
+                <div class="left-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-filter"></i> Filtrează după Materie
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="subjectCheckboxes">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="center-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-table"></i> Detalii Note
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="noGradesMessage" class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                Selectează o materie din stânga pentru a vedea notele.
+                            </div>
+                            <div id="gradesTableContainer" style="display: none;">
+                                <div class="table-responsive">
+                                    <table class="table-dark-custom">
+                                        <thead>
+                                            <tr>
+                                                <th>Data</th>
+                                                <th>Materia</th>
+                                                <th>Tip</th>
+                                                <th>Nota</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="gradesTableBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row" id="averageSection">
+                                <div class="col-md-4">
+                                    <div class="average-card">
+                                        <h6>Medie Generală</h6>
+                                        <h2 id="overallAverage">-</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="average-card">
+                                        <h6>Nota Cea Mai Mare</h6>
+                                        <h2 id="highestGrade">-</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="average-card">
+                                        <h6>Nota Cea Mai Mică</h6>
+                                        <h2 id="lowestGrade">-</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-line"></i> Evoluția Notelor în Timp
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="gradesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    {{ subjects_json|json_script:"subjects-json" }}
+    <script>
+
+        const gradesData = JSON.parse(
+            JSON.parse(
+                document.getElementById('subjects-json').textContent));
+
+
+        let selectedSubjects = new Set();
+        let chart = null;
+
+        function init() {
+            renderSubjectCheckboxes();
+            setupEventListeners();
+        }
+
+        function renderSubjectCheckboxes() {
+            const container = document.getElementById('subjectCheckboxes');
+            let html = '';
+
+            gradesData.forEach(subject => {
+                html += `
+                    <div class="subject-checkbox mb-3" data-subject-id="${subject.id}">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${subject.id}" id="subject${subject.id}">
+                            <label class="form-check-label ms-2" for="subject${subject.id}">
+                                <strong>${subject.name}</strong>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function setupEventListeners() {
+            const checkboxes = document.querySelectorAll('.subject-checkbox input[type="checkbox"]');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    const subjectId = parseInt(this.value);
+                    const parentDiv = this.closest('.subject-checkbox');
+
+                    if (this.checked) {
+                        selectedSubjects.add(subjectId);
+                        parentDiv.classList.add('checked');
+                    } else {
+                        selectedSubjects.delete(subjectId);
+                        parentDiv.classList.remove('checked');
+                    }
+
+                    updateDisplay();
+                });
+            });
+
+            const toggleBtn = document.getElementById('toggleBtn');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            });
+        }
+
+       
+        function updateDisplay() {
+            if (selectedSubjects.size === 0) {
+                document.getElementById('noGradesMessage').style.display = 'block';
+                document.getElementById('gradesTableContainer').style.display = 'none';
+                resetStats();
+                return;
+            }
+
+            document.getElementById('noGradesMessage').style.display = 'none';
+            document.getElementById('gradesTableContainer').style.display = 'block';
+
+            updateGradesTable();
+            updateStatistics();
+            updateChart();
+        }
+
+        
+        function updateGradesTable() {
+            const tbody = document.getElementById('gradesTableBody');
+            let html = '';
+            let allGrades = [];
+
+            gradesData.forEach(subject => {
+                if (selectedSubjects.has(subject.id)) {
+                    subject.grades.forEach(grade => {
+                        console.log(grade);
+                        allGrades.push({
+                            date: grade.date,
+                            subject: subject.name,
+                            type: grade.type,
+                            grade: grade.grade
+                        });
+                    });
+                }
+            });
+
+          
+            allGrades.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            allGrades.forEach(item => {
+                const gradeClass = item.grade >= 8 ? 'text-success' : item.grade >= 5 ? 'text-warning' : 'text-danger';
+                html += `
+                    <tr>
+                        <td>${new Date(item.date).toLocaleDateString('ro-RO', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                        <td><span class="badge bg-primary">${item.subject}</span></td>
+                        <td>${item.type}</td>
+                        <td><strong class="${gradeClass}">${item.grade}</strong></td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html || '<tr><td colspan="4" class="text-center text-muted">Nu s-au găsit note</td></tr>';
+        }
+
+       
+        function updateStatistics() {
+            let allGrades = [];
+
+            gradesData.forEach(subject => {
+                if (selectedSubjects.has(subject.id)) {
+                    subject.grades.forEach(grade => {
+                        allGrades.push(grade.grade);
+                    });
+                }
+            });
+
+            if (allGrades.length > 0) {
+                const average = (allGrades.reduce((a, b) => a + b, 0) / allGrades.length).toFixed(2);
+                const highest = Math.max(...allGrades);
+                const lowest = Math.min(...allGrades);
+
+                document.getElementById('overallAverage').textContent = average;
+                document.getElementById('highestGrade').textContent = highest;
+                document.getElementById('lowestGrade').textContent = lowest;
+            } else {
+                resetStats();
+            }
+        }
+
+       
+        function resetStats() {
+            document.getElementById('overallAverage').textContent = '-';
+            document.getElementById('highestGrade').textContent = '-';
+            document.getElementById('lowestGrade').textContent = '-';
+            if (chart) {
+                chart.destroy();
+                chart = null;
+            }
+        }
+
+       
+        function updateChart() { 
+            const ctx = document.getElementById('gradesChart').getContext('2d');
+
+            
+            let chartDataBySubject = [];
+
+            gradesData.forEach(subject => {
+                if (selectedSubjects.has(subject.id)) {
+                    
+                    const sortedGrades = subject.grades
+                        .map(grade => ({
+                            date: new Date(grade.date),
+                            grade: grade.grade
+                        }))
+                        .sort((a, b) => a.date - b.date);
+
+                    chartDataBySubject.push({
+                        subjectName: subject.name,
+                        grades: sortedGrades
+                    });
+                }
+            });
+
+            const datasets = chartDataBySubject.map((subjectObj, index) => ({
+                label: subjectObj.subjectName,
+                data: subjectObj.grades.map(g => g.grade),
+                borderColor: randomColor(index),
+                backgroundColor: 'transparent',
+                tension: 0.4,
+                fill: false,
+                pointRadius: 6,
+                pointHoverRadius: 8
+            }));
+
+            let allDates = [];
+            chartDataBySubject.forEach(subjectObj => {
+                allDates = allDates.concat(subjectObj.grades.map(g => g.date));
+            });
+            allDates = [...new Set(allDates.map(d => d.toISOString()))].map(d => new Date(d)).sort((a, b) => a - b);
+            const labels = allDates.map(d => d.toLocaleDateString('ro-RO', { month: 'short', day: 'numeric' }));
+
+           
+            if (chart) {
+                chart.destroy();
+            }
+
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,    
+                    datasets: datasets   
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function (context) {
+                                    return context[0].dataset.label; 
+                                },
+                                label: function (context) {
+                                    return 'Nota: ' + context.parsed.y;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 1,
+                            max: 10,
+                            ticks: {
+                                stepSize: 1
+                            },
+                            title: {
+                                display: true,
+                                text: 'Nota (1-10)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Data'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+   
+        document.addEventListener('DOMContentLoaded', init);
+        function randomColor(i) {
+            const colors = ["#e74c3c", "#3498db", "#2ecc71", "#9b59b6", "#f1c40f", "#e67e22", "#1abc9c", "#34495e", "#ff6b6b"];
+            return colors[i % colors.length];
+        }
+    </script>
+</body>
+
+</html>

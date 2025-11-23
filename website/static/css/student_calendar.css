@@ -1,0 +1,275 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #121212;
+    font-family: 'Segoe UI', sans-serif;
+    color: #e0e0e0;
+
+}
+
+
+.main-content {
+    margin-left: 260px;
+    transition: margin-left 0.3s ease;
+    min-height: 100vh;
+    background-color: #1e1e1e;
+
+}
+
+.main-content.expanded {
+    margin-left: 70px;
+}
+
+.navbar {
+    background-color: #333 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #fff !important;
+}
+
+
+.calendar-exam-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.calendar-section,
+.exam-details-section {
+    background: #2c2c2c;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.calendar-section h5,
+.exam-details-section h5 {
+    margin-bottom: 15px;
+    color: #90caf9;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.calendar-day-name {
+    text-align: center;
+    font-weight: 600;
+    color: #90caf9;
+    padding: 10px 5px;
+    font-size: 0.9rem;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #444;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+    position: relative;
+}
+
+.calendar-day:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.calendar-day.other-month {
+    color: #666;
+    background-color: #333;
+
+}
+
+.calendar-day.today {
+    border: 2px solid #90caf9;
+    
+    font-weight: 700;
+}
+
+.calendar-day.holiday {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.calendar-day.exam {
+    background-color: #e57373;
+    color: #c62828;
+    font-weight: 700;
+}
+
+.calendar-day.exam:after {
+    content: '📝';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 0.7rem;
+}
+
+
+.exam-details-section {
+    min-height: 300px;
+}
+
+.exam-details-content {
+    text-align: center;
+    color: #b0bec5;
+    padding: 30px 15px;
+}
+
+.exam-details-content.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 240px;
+}
+
+.exam-details-content i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: #888;
+}
+
+.exam-info {
+    display: none;
+}
+
+.exam-info.active {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.exam-detail-item {
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: #333;
+    border-radius: 8px;
+    border-left: 4px solid #90caf9;
+
+}
+
+.exam-detail-item label {
+    display: block;
+    font-weight: 600;
+    color: #90caf9;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
+}
+
+.exam-detail-item p {
+    margin: 0;
+    font-size: 1rem;
+    color: #e0e0e0;
+}
+
+.calendar-month-selector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: linear-gradient(135deg, #3f51b5 0%, #1a237e 100%);
+    border-radius: 8px;
+    color: white;
+}
+
+.calendar-month-selector button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.calendar-month-selector button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.calendar-month-selector h6 {
+    margin: 0;
+    font-weight: 600;
+}
+
+
+.calendar-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #e0e0e0;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+@media (max-width: 992px) {
+    .calendar-exam-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        left: -260px;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .timetable-table {
+        font-size: 0.85rem;
+    }
+
+    .timetable-table td {
+        padding: 10px 5px;
+    }
+}

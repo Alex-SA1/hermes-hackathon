@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prezența Mea - Nibble Classroom</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static '/css/student_attendance.css' %}">
+
+</head>
+
+<body>
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    {% include 'sidebar.html' %}
+
+    <div class="main-content" id="mainContent">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <button class="btn d-lg-none text-white" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-clipboard-check"></i> Prezența Mea
+                </a>
+            </div>
+        </nav>
+
+
+        <div class="content-container">
+
+            <div class="summary-section">
+                <div class="summary-card">
+                    <h6>Total Absențe</h6>
+                    <h2>{{ total_absences }}</h2>
+                </div>
+                <div class="summary-card warning">
+                    <h6>Luna Aceasta</h6>
+                    <h2>{{ monthly_absences }}</h2>
+                </div>
+                <div class="summary-card info">
+                    <h6>Materia Cel Mai Absentată</h6>
+                    <h2 style="font-size: 1.5rem;">{{ most_missed_subject|default:"N/A" }}</h2>
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="card-header">
+                    <h5>
+                        <i class="fas fa-table"></i>
+                        Evidența Absențelor
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if absences %}
+                    <div class="table-responsive">
+                        <table class="mb-0 table-dark-custom">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Materia</th>
+                                    <th>Ora</th>
+                                    <th>Profesor</th>
+                                    <th>Observații</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for absence in absences %}
+                                <tr>
+                                    <td class="date-cell">
+                                        <i class="far fa-calendar"></i>
+                                        {{ absence.date|date:"d M Y" }}
+                                    </td>
+                                    <td>
+                                        <span class="subject-badge bg-primary">
+                                            {{ absence.name|default:"General" }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if absence.teacher %}
+                                        {{ absence.teacher }}
+                                        {% else %}
+                                        <span class="text-muted">Neînregistrat</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if absence.note %}
+                                        <span class="text-muted">{{ absence.note }}</span>
+                                        {% else %}
+                                        <span class="text-muted fst-italic">Fără observații</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <h5>Prezență Perfectă!</h5>
+                        <p>Nu ai vreo absență. Felicitări!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const mobileToggle = document.getElementById('mobileToggle');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            });
+        }
+
+
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', () => {
+                sidebar.classList.add('mobile-open');
+                mobileOverlay.classList.add('show');
+            });
+        }
+
+
+        if (mobileOverlay) {
+            mobileOverlay.addEventListener('click', () => {
+                sidebar.classList.remove('mobile-open');
+                mobileOverlay.classList.remove('show');
+            });
+        }
+    </script>
+</body>
+
+</html>

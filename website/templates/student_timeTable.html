@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orarul Meu - Nibble Classroom</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static '/css/student_timetable.css' %}">
+</head>
+
+<body>
+    {% include 'sidebar.html' %}
+
+    <div class="main-content" id="mainContent">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    Orarul Meu
+                </a>
+            </div>
+        </nav>
+
+        <div class="container-fluid my-4 px-4">
+            <div class="timetable-section">
+                <h4 class="mb-4">
+                    <i class="fas fa-clock"></i> Program Săptămânal
+                </h4>
+                <div class="table-responsive">
+                    <div class="table-responsive">
+                        <table class="timetable-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">Ora</th>
+                                    {% for day in days %}
+                                    <th>{{ day }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if timetable_data %}
+                                {% for row in timetable_data %}
+                                <tr>
+                                    <td class="time-cell">{{ row.time }}</td>
+                                    {% for cell in row.cells %}
+                                    {% if not cell.empty %}
+                                    <td class="{{ cell.css_class }}">
+                                        <div class="subject-name">{{ cell.subject }}</div>
+                                        <div class="teacher-name">{{ cell.teacher }}</div>
+                                    </td>
+                                    {% else %}
+                                    <td class="subject-empty">
+                                        <div class="text-muted">-</div>
+                                    </td>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        <i class="fas fa-calendar-times fa-3x mb-3 d-block"></i>
+                                        Nu s-au găsit intrări în orar pentru clasa ta
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panou Profesor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static '/css/teacher_main.css' %}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">Consolă Profesor</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Comutare navigație">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Deconectare</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="alert 
+                {% if message.tags == 'error' %} alert-danger 
+                {% elif message.tags == 'success' %} alert-success 
+                {% else %} alert-info 
+                {% endif %}
+                shadow-sm alert-dismissible fade show custom-alert" role="alert">
+
+            {{ message }}
+
+            <button type="button" class="btn-close btn-close-black" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="container py-5">
+        <div class="hero-card mb-5">
+            <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+
+
+                <div>
+                    <p class="section-title mb-1">Prezentare generală profesor</p>
+                    <h1 class="display-6 fw-bold mb-3">
+                        Bine ai revenit, {{ request.user.first_name|default:"Profesor"}}!
+                    </h1>
+                    <p class="mb-0 text-light opacity-75">
+                        Alege o clasă pentru a vizualiza notele, a gestiona temele și a trimite anunțuri.
+                    </p>
+                </div>
+
+
+                <div class="text-lg-end mt-3 mt-lg-0">
+                    <a href="{% url 'reviews-page' %}" class="btn btn-primary px-4 py-2">
+                        ⭐ Recenzii & Feedback
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <p class="section-title mb-0">Clase disponibile</p>
+            <span class="text-secondary">Selectează o clasă pentru a continua</span>
+        </div>
+
+        <div class="row g-4">
+            {% for classroom in classrooms %}
+            <div class="col-md-4 col-sm-6">
+                <a href="{% url 'teacher-classroom' classroom.id %}" class="class-card position-relative">
+                    {% if classroom.is_form_teacher %}
+                    <span class="form-teacher-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6l1.176 3.62h3.808l-3.08 2.24 1.176 3.62L12 13.24l-3.08 2.24 1.176-3.62-3.08-2.24h3.808L12 6z" />
+                        </svg>
+                        Diriginte
+                    </span>
+                    <span class="form-teacher-ring"></span>
+                    {% endif %}
+                    <div class="class-name d-flex align-items-center">
+                        <p class="class-meta mb-0">{{ classroom.number|default:"Numar clasa" }}</p>
+                        <p class="class-meta mb-0">{{ classroom.letter|default:"Litera clasa" }}</p>
+                    </div>
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="empty-state text-center">
+                    <h5 class="mb-2 text-light">Nu au fost găsite clase</h5>
+                    <p class="mb-0">Se pare că nu ai încă nicio clasă asociată contului tău. Contactează administratorul
+                        pentru a adăuga clase.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
